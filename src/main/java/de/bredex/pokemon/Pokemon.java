@@ -3,6 +3,8 @@ package de.bredex.pokemon;
 import de.bredex.enums.Type;
 import de.bredex.pokedex.Pokedex;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
@@ -11,7 +13,9 @@ public class Pokemon {
 	@Id
 	private int id;
 	private String name;
+	@Enumerated(EnumType.STRING)
 	private Type type1;
+	@Enumerated(EnumType.STRING)
 	private Type type2;
 	private int total;
 	private int hp;

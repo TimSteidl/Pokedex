@@ -20,6 +20,8 @@ import de.bredex.enums.Type;
 import de.bredex.pokedex.Pokedex;
 import de.bredex.pokedex.PokedexRepository;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 @RestController
 @RequestMapping("/pokemons")
@@ -35,6 +37,69 @@ public class PokemonController {
         this.pokemonRepository = pokemonRepository;
         this.pokedexRepository = pokedexRepository;
     }
+
+    @GetMapping("/filtered")
+    public List<Pokemon> getFilteredPokemons(@RequestParam int id, @RequestParam String name, @RequestParam String type1, 
+                                            @RequestParam String type2, @RequestParam String attribute, @RequestParam String operation, 
+                                            @RequestParam("value") int value) {
+        List<Pokemon> pokemons = this.pokemonRepository.getFilteredPokemon(id, name, type1, type2);
+        System.err.println(pokemons.size());
+        switch (attribute) {
+            case "total" -> {
+                System.out.println(attribute + " " + operation + " " + value);
+                switch (operation) {
+                    case ">" -> pokemons = pokemons.stream().filter(p -> p.getTotal() < value).toList();
+                    case "=" -> pokemons = pokemons.stream().filter(p -> p.getTotal() == value).toList();
+                    default -> pokemons =  pokemons.stream().filter(p -> p.getTotal() > value).toList();
+                }
+            }
+            case "speed" -> {
+                switch (operation) {
+                    case ">" -> pokemons = pokemons.stream().filter(p -> p.getSpeed() < value).toList();
+                    case "=" ->pokemons =  pokemons.stream().filter(p -> p.getSpeed() == value).toList();
+                    default -> pokemons = pokemons.stream().filter(p -> p.getSpeed() > value).toList();
+                }
+            }
+            case "hp" -> {
+                switch (operation) {
+                    case ">" -> pokemons = pokemons.stream().filter(p -> p.getHp() < value).toList();
+                    case "=" -> pokemons = pokemons.stream().filter(p -> p.getHp() == value).toList();
+                    default -> pokemons = pokemons.stream().filter(p -> p.getHp() > value).toList();
+                }
+            }
+            case "attack" -> {
+                switch (operation) {
+                    case ">" -> pokemons = pokemons.stream().filter(p -> p.getAttack() < value).toList();
+                    case "=" -> pokemons = pokemons.stream().filter(p -> p.getAttack() == value).toList();
+                    default -> pokemons = pokemons.stream().filter(p -> p.getAttack() > value).toList();
+                }
+            }
+            case "specialAttack" -> {
+                switch (operation) {
+                    case ">" -> pokemons = pokemons.stream().filter(p -> p.getSpecialAttack() < value).toList();
+                    case "=" -> pokemons = pokemons.stream().filter(p -> p.getSpecialAttack() == value).toList();
+                    default -> pokemons = pokemons.stream().filter(p -> p.getSpecialAttack() > value).toList();
+                }
+            }
+            case "specialDefense" -> {
+                switch (operation) {
+                    case ">" -> pokemons = pokemons.stream().filter(p -> p.getTotal() > value).toList();
+                    case "=" -> pokemons = pokemons.stream().filter(p -> p.getTotal() == value).toList();
+                    default -> pokemons = pokemons.stream().filter(p -> p.getTotal() < value).toList();
+                }
+            }
+            default -> {
+                switch (operation) {
+                    case ">" -> pokemons = pokemons.stream().filter(p -> p.getDefense() < value).toList();
+                    case "=" -> pokemons = pokemons.stream().filter(p -> p.getDefense() == value).toList();
+                    default -> pokemons = pokemons.stream().filter(p-> p.getDefense() > value).toList();
+                }
+            }
+        }
+        System.err.println(pokemons.size());
+        return pokemons;
+    }
+    
 
     @PostMapping("/upload")
     public int uploadFile(@RequestBody MultipartFile file) {
